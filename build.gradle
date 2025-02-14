@@ -1,0 +1,68 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.3.8'
+	id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'com.serverless.ems'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17)
+	}
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation("org.springframework.boot:spring-boot-starter-web")
+	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+	implementation 'com.amazonaws:aws-lambda-java-core:1.2.3'
+
+	// AWS SDK v1 for DynamoDB
+	implementation 'com.amazonaws:aws-java-sdk-dynamodb:1.12.698'
+
+	// AWS SDK v1 for Lambda Invocation
+	implementation 'com.amazonaws:aws-java-sdk-lambda:1.12.698'
+
+	implementation 'com.amazonaws:aws-lambda-java-events:3.11.2'
+
+	// Gson for JSON parsing
+	implementation 'com.google.code.gson:gson:2.10.1'
+
+	// Lombok (for reducing boilerplate code)
+	compileOnly("org.projectlombok:lombok")
+	annotationProcessor("org.projectlombok:lombok")
+
+	// Spring Boot Test dependencies
+	testImplementation("org.springframework.boot:spring-boot-starter-test")
+}
+
+tasks.named('jar') {
+	manifest {
+		attributes 'Main-Class': 'org.springframework.boot.loader.JarLauncher'
+	}
+}
+
+task buildZip(type: Zip) {
+	from compileJava
+	from processResources
+	into('lib') {
+		from configurations.runtimeClasspath
+	}
+}
+
+
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
