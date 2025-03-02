@@ -18,4 +18,8 @@ public class EmployeeService {
         dynamoDBMapper.save(employee);
         return employee;
     }
+
+    public Employee getEmployee(int id){
+        return dynamoDBMapper.load(Employee.class, id, dynamoDBMapper);
+    }
 }
